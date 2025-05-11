@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GildedRoseKata.ItemUpdaters;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 
 namespace GildedRoseKata;
@@ -38,7 +40,18 @@ public class Program
             new Item {Name = "Conjured Mana Cake", SellIn = 3, Quality = 6}
         };
 
-        var app = new GildedRose(items);
+        var serviceProvider = new ServiceCollection()
+           .AddSingleton(items)
+           .AddTransient<GildedRose>()
+           .AddTransient<AgedBrieUpdater>()
+           .AddTransient<BackstagePassesUpdater>()
+           .AddTransient<NormalItemUpdater>()
+           .AddTransient<ConjuredItemUpdater>()
+           .AddTransient<LegendaryItemUpdater>()
+           .AddSingleton<IItemUpdaterFactory, ItemUpdaterFactory>()
+           .BuildServiceProvider();
+
+        var app = serviceProvider.GetRequiredService<GildedRose>();
 
         int days = 2;
         if (args.Length > 0)
@@ -57,5 +70,18 @@ public class Program
             Console.WriteLine("");
             app.UpdateQuality();
         }
+    }
+
+    public static IServiceProvider GetServiceProvider(List<Item> items)
+    {
+        return new ServiceCollection()
+            .AddSingleton(items)
+            .AddTransient<GildedRose>()
+            .AddTransient<AgedBrieUpdater>()
+            .AddTransient<BackstagePassesUpdater>()
+            .AddTransient<NormalItemUpdater>()
+            .AddTransient<ConjuredItemUpdater>()
+            .AddSingleton<IItemUpdaterFactory, ItemUpdaterFactory>()
+            .BuildServiceProvider();
     }
 }
