@@ -36,21 +36,10 @@ public class Program
                 SellIn = 5,
                 Quality = 49
             },
-            // this conjured item does not work properly yet
             new Item {Name = "Conjured Mana Cake", SellIn = 3, Quality = 6}
         };
 
-        var serviceProvider = new ServiceCollection()
-           .AddSingleton(items)
-           .AddTransient<GildedRose>()
-           .AddTransient<AgedBrieUpdater>()
-           .AddTransient<BackstagePassesUpdater>()
-           .AddTransient<NormalItemUpdater>()
-           .AddTransient<ConjuredItemUpdater>()
-           .AddTransient<LegendaryItemUpdater>()
-           .AddSingleton<IItemUpdaterFactory, ItemUpdaterFactory>()
-           .BuildServiceProvider();
-
+        var serviceProvider = GetServiceProvider(items);
         var app = serviceProvider.GetRequiredService<GildedRose>();
 
         int days = 2;
@@ -81,6 +70,7 @@ public class Program
             .AddTransient<BackstagePassesUpdater>()
             .AddTransient<NormalItemUpdater>()
             .AddTransient<ConjuredItemUpdater>()
+            .AddTransient<LegendaryItemUpdater>()
             .AddSingleton<IItemUpdaterFactory, ItemUpdaterFactory>()
             .BuildServiceProvider();
     }
