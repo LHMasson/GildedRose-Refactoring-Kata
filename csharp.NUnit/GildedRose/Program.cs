@@ -64,7 +64,7 @@ public class Program
     public static IServiceProvider GetServiceProvider(List<Item> items)
     {
         return new ServiceCollection()
-            .AddSingleton(items)
+            .AddSingleton<IList<Item>>(items)
             .AddTransient<GildedRose>()
             .AddTransient<AgedBrieUpdater>()
             .AddTransient<BackstagePassesUpdater>()
